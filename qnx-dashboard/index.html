@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QNX Safety Supervisor | White & Cherry Red Dashboard</title>
+  <meta name="description" content="White and Cherry Red Real-Time Safety Monitoring Dashboard for QNX RTOS.">
+  <meta name="theme-color" content="#C2183A">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       QNX WHITE & CHERRY RED DESIGN SYSTEM
+       Theme: Crisp White (#FFFFFF), Cherry Red (#C2183A), Deep Red (#8B0018)
+       Geometry: 100% Sharp Square (border-radius: 0px)
+       ========================================================================== */
+    :root {
+      --qnx-cherry: #C2183A;
+      --qnx-cherry-dark: #8B0018;
+      --qnx-cherry-light: #FFF0F3;
+      --qnx-cherry-border: #F7B5C2;
+      --qnx-cherry-glow: rgba(194, 24, 58, 0.25);
+
+      --bg-page: #F4F6F9;
+      --bg-panel: #FFFFFF;
+      --bg-subcard: #F8FAFC;
+      --bg-code: #0F172A;
+
+      --text-main: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+
+      --border-light: #E2E8F0;
+      --border-medium: #CBD5E1;
+
+      --status-safe: #059669;
+      --status-safe-bg: #ECFDF5;
+      --status-safe-border: #A7F3D0;
+
+      --status-warn: #D97706;
+      --status-warn-bg: #FFFBEB;
+      --status-warn-border: #FDE68A;
+
+      --status-danger: #DC2626;
+      --status-danger-bg: #FEF2F2;
+
+      --font-digit: 'Chakra Petch', 'Segoe UI', 'JetBrains Mono', Consolas, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0px !important; /* Strict Pi Square mandate */
+    }
+
+    body {
+      background-color: var(--bg-page);
+      background-image: 
+        linear-gradient(rgba(194, 24, 58, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(194, 24, 58, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      padding: 16px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .cockpit {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ==========================================================================
+       HEADER BAR
+       ========================================================================== */
+    .header-bar {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-top: 4px solid var(--qnx-cherry);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .qnx-badge {
+      background: var(--qnx-cherry);
+      color: #FFFFFF;
+      font-family: var(--font-digit);
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      padding: 6px 14px;
+      box-shadow: 0 2px 8px var(--qnx-cherry-glow);
+    }
+
+    .brand-meta h1 {
+      font-family: var(--font-digit);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .brand-meta span {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .connection-pill {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-light);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--status-safe);
+      box-shadow: 0 0 6px var(--status-safe);
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.85); }
+    }
+
+    .clock-pill {
+      background: var(--qnx-cherry-light);
+      border: 1px solid var(--qnx-cherry-border);
+      color: var(--qnx-cherry);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .qnx-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-medium);
+      color: var(--text-main);
+      font-family: var(--font-digit);
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .qnx-btn:hover {
+      background: var(--qnx-cherry);
+      border-color: var(--qnx-cherry-dark);
+      color: #FFF;
+      box-shadow: 0 2px 8px var(--qnx-cherry-glow);
+    }
+
+    .btn-sim-active {
+      background: var(--qnx-cherry) !important;
+      color: #FFF !important;
+      border-color: var(--qnx-cherry-dark) !important;
+      box-shadow: 0 2px 10px var(--qnx-cherry-glow);
+    }
+
+    /* ==========================================================================
+       SECTION: STATE ANNUNCIATOR PANEL
+       ========================================================================== */
+    .state-annunciator-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .annunciator-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .annunciator-label {
+      font-family: var(--font-digit);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+    }
+
+    .annunciator-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .annunciator-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .state-tile {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-light);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      opacity: 0.55;
+      transition: all 0.2s ease;
+    }
+
+    .state-tile .state-name {
+      font-family: var(--font-digit);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .state-tile .state-desc {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-light);
+    }
+
+    /* Active Annunciator Highlight in Cherry Red */
+    .state-tile.active-warning {
+      opacity: 1;
+      background: var(--qnx-cherry-light);
+      border: 2px solid var(--qnx-cherry);
+      box-shadow: 0 2px 10px var(--qnx-cherry-glow);
+    }
+
+    .state-tile.active-warning .state-name {
+      color: var(--qnx-cherry);
+    }
+
+    .state-tile.active-warning .state-desc {
+      color: var(--qnx-cherry-dark);
+      font-weight: 600;
+    }
+
+    .state-tile.active-safe {
+      opacity: 1;
+      background: var(--status-safe-bg);
+      border: 2px solid var(--status-safe);
+    }
+
+    .state-tile.active-safe .state-name {
+      color: var(--status-safe);
+    }
+
+    .state-tile.active-critical {
+      opacity: 1;
+      background: var(--status-danger-bg);
+      border: 2px solid var(--status-danger);
+    }
+
+    .state-tile.active-critical .state-name {
+      color: var(--status-danger);
+    }
+
+    .annunciator-banner {
+      background: var(--qnx-cherry-light);
+      border: 1px solid var(--qnx-cherry-border);
+      border-left: 4px solid var(--qnx-cherry);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .annunciator-banner .banner-icon {
+      color: var(--qnx-cherry);
+      font-size: 1.2rem;
+    }
+
+    .annunciator-banner strong {
+      color: var(--qnx-cherry-dark);
+    }
+
+    /* ==========================================================================
+       HERO METRICS 4-COLUMN
+       ========================================================================== */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--qnx-cherry);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+      position: relative;
+    }
+
+    .hero-corner {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid var(--qnx-cherry);
+      border-right: 2px solid var(--qnx-cherry);
+    }
+
+    .hero-label {
+      font-family: var(--font-digit);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    .hero-value {
+      font-family: var(--font-digit);
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 4px 0;
+      line-height: 1.1;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      color: var(--text-main);
+    }
+
+    .hero-unit {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .hero-sub {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .text-cherry {
+      color: var(--qnx-cherry) !important;
+    }
+
+    .text-safe {
+      color: var(--status-safe) !important;
+    }
+
+    /* ==========================================================================
+       DUAL MAIN DISPLAY PANELS (SENSORS & SPEED ARBITRATION)
+       ========================================================================== */
+    .dual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .dual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cockpit-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .panel-header-title {
+      font-family: var(--font-digit);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-num {
+      color: var(--qnx-cherry);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .pill-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .pill-ok {
+      background: var(--status-safe-bg);
+      border: 1px solid var(--status-safe-border);
+      color: var(--status-safe);
+    }
+
+    .pill-active {
+      background: var(--qnx-cherry-light);
+      border: 1px solid var(--qnx-cherry-border);
+      color: var(--qnx-cherry);
+    }
+
+    /* SENSORS CARDS */
+    .sensor-item-card {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sensor-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sensor-id-label {
+      font-family: var(--font-digit);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sensor-loc-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .sensor-readout-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .sensor-lcd-digits {
+      font-family: var(--font-digit);
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .sensor-lcd-digits .cm-unit {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .sensor-warning-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+    }
+
+    .sensor-warning-pill.warn {
+      background: var(--qnx-cherry-light);
+      border: 1px solid var(--qnx-cherry-border);
+      color: var(--qnx-cherry);
+    }
+
+    .sensor-warning-pill.safe {
+      background: var(--status-safe-bg);
+      border: 1px solid var(--status-safe-border);
+      color: var(--status-safe);
+    }
+
+    /* Segmented LED Bar for Sensors */
+    .led-meter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .led-track {
+      height: 12px;
+      background: #E2E8F0;
+      border: 1px solid var(--border-medium);
+      display: flex;
+      gap: 2px;
+      padding: 2px;
+    }
+
+    .led-segment {
+      flex: 1;
+      height: 100%;
+      background: #CBD5E1;
+      transition: background 0.15s ease;
+    }
+
+    .led-segment.lit-danger {
+      background: var(--qnx-cherry);
+    }
+
+    .led-segment.lit-warn {
+      background: var(--qnx-cherry);
+    }
+
+    .led-segment.lit-safe {
+      background: var(--status-safe);
+    }
+
+    .led-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    /* SPEED ARBITRATION DISPLAY */
+    .arb-card {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .arb-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .arb-title {
+      font-family: var(--font-digit);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .arb-cmd-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-medium);
+      color: var(--text-main);
+    }
+
+    .arb-cmd-tag.gov {
+      background: var(--qnx-cherry-light);
+      border-color: var(--qnx-cherry-border);
+      color: var(--qnx-cherry);
+    }
+
+    .arb-speed-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .arb-speed-num {
+      font-family: var(--font-digit);
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      color: var(--text-main);
+    }
+
+    .speed-progress-bar {
+      height: 10px;
+      background: #E2E8F0;
+      border: 1px solid var(--border-medium);
+    }
+
+    .speed-fill-nav {
+      height: 100%;
+      background: #2563EB;
+      transition: width 0.3s ease;
+    }
+
+    .speed-fill-motor {
+      height: 100%;
+      background: var(--qnx-cherry);
+      transition: width 0.3s ease;
+    }
+
+    .reduction-box {
+      background: var(--qnx-cherry-light);
+      border: 1px solid var(--qnx-cherry-border);
+      border-left: 4px solid var(--qnx-cherry);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .red-text-group h4 {
+      font-family: var(--font-digit);
+      font-size: 0.85rem;
+      color: var(--qnx-cherry-dark);
+      letter-spacing: 0.8px;
+    }
+
+    .red-text-group p {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .red-badge {
+      background: var(--qnx-cherry);
+      color: #FFF;
+      font-family: var(--font-digit);
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      letter-spacing: 0.8px;
+      box-shadow: 0 2px 6px var(--qnx-cherry-glow);
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       TIMING METRICS (DETERMINISTIC LATENCY)
+       ========================================================================== */
+    .timing-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .timing-cells-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 1024px) {
+      .timing-cells-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .timing-cells-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .timing-cell {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-light);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .tc-label {
+      font-family: var(--font-digit);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+    }
+
+    .tc-value {
+      font-family: var(--font-digit);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 4px 0;
+      line-height: 1;
+    }
+
+    .tc-unit {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .tc-sub {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-light);
+    }
+
+
+    /* ==========================================================================
+       MODAL & TOAST
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--bg-panel);
+      border: 2px solid var(--qnx-cherry);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 520px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .modal-head h3 {
+      font-family: var(--font-digit);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--qnx-cherry);
+      letter-spacing: 1px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: var(--qnx-cherry);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-group label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .qnx-input {
+      background: #FFFFFF;
+      border: 1px solid var(--border-medium);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    .qnx-input:focus {
+      border-color: var(--qnx-cherry);
+      box-shadow: 0 0 0 2px var(--qnx-cherry-light);
+    }
+
+    .modal-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .qnx-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-main);
+      color: #FFF;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 10px 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 10000;
+      border-left: 4px solid var(--qnx-cherry);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cockpit">
+
+    <!-- ====================================================================
+         TOP STATUS BAR
+         ==================================================================== -->
+    <header class="header-bar">
+      <div class="brand-group">
+        <div class="qnx-badge">QNX</div>
+        <div class="brand-meta">
+          <h1>SAFETY SUPERVISOR</h1>
+          <span>FAIL-SAFE RTOS TELEMETRY &bull; QNX NEUTRINO 7.1</span>
+        </div>
+      </div>
+
+      <div class="controls-group">
+        <div class="connection-pill">
+          <div class="pulse-dot" id="liveDot"></div>
+          <span id="connStatusText">BENCHMARK DEMO</span>
+        </div>
+
+        <div class="clock-pill" id="liveClock">19:55:00.000</div>
+
+        <button class="qnx-btn" id="btnSimToggle" title="Simulate real-time sensor & timing changes">
+          <span>&#9654;</span>
+          <span id="btnSimLabel">SIMULATE LIVE</span>
+        </button>
+
+        <button class="qnx-btn" id="btnOpenConfig" title="Configure Firebase Realtime Database">
+          <span>&#9881;</span>
+          <span>FIREBASE CONFIG</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         SECTION 1: DISCRETE STATE ANNUNCIATOR
+         ==================================================================== -->
+    <section class="state-annunciator-panel">
+      <div class="annunciator-title-row">
+        <span class="annunciator-label">[SAFETY STATE ANNUNCIATOR]</span>
+        <span class="pill-tag pill-active" id="activeStatePill">ACTIVE: WARNING</span>
+      </div>
+
+      <div class="annunciator-grid">
+        <!-- State 1: SAFE -->
+        <div class="state-tile" id="tileSafe">
+          <span class="state-name">SAFE</span>
+          <span class="state-desc">Normal Cruise</span>
+        </div>
+
+        <!-- State 2: WARNING -->
+        <div class="state-tile active-warning" id="tileWarning">
+          <span class="state-name">WARNING</span>
+          <span class="state-desc">Obstacle Proximity</span>
+        </div>
+
+        <!-- State 3: EMERGENCY STOP -->
+        <div class="state-tile" id="tileEStop">
+          <span class="state-name">EMERGENCY STOP</span>
+          <span class="state-desc">Hazard Immediate</span>
+        </div>
+
+        <!-- State 4: FAULT -->
+        <div class="state-tile" id="tileFault">
+          <span class="state-name">SYSTEM FAULT</span>
+          <span class="state-desc">Sensor / Comm Loss</span>
+        </div>
+      </div>
+
+      <div class="annunciator-banner">
+        <span class="banner-icon">&#9888;</span>
+        <span id="bannerText"><strong>ARBITRATION ENGAGED:</strong> Proximity obstacle detected at <strong>42.0 cm</strong>. Motor throttle curtailed by <strong>40.0%</strong>.</span>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: FOUR PRIMARY HERO METRICS
+         ==================================================================== -->
+    <section class="hero-grid">
+      <!-- Hero 1: Safety State -->
+      <div class="hero-card">
+        <div class="hero-corner"></div>
+        <span class="hero-label">SUPERVISOR STATE</span>
+        <div class="hero-value text-cherry" id="heroState">WARNING</div>
+        <span class="hero-sub" id="heroStateSub">Fail-safe governor engaged</span>
+      </div>
+
+      <!-- Hero 2: Speed Arbitration -->
+      <div class="hero-card">
+        <div class="hero-corner"></div>
+        <span class="hero-label">SPEED ARBITRATION</span>
+        <div class="hero-value">
+          <span id="heroNavSpeed">60</span><span class="hero-unit">%</span>
+          <span style="color:var(--text-light);margin:0 4px;">&rarr;</span>
+          <span class="text-cherry" id="heroAppSpeed">36</span><span class="hero-unit">%</span>
+        </div>
+        <span class="hero-sub text-cherry" id="heroReductionSub">-40.0% REDUCTION</span>
+      </div>
+
+      <!-- Hero 3: Cycle Latency -->
+      <div class="hero-card">
+        <div class="hero-corner"></div>
+        <span class="hero-label">CYCLE PROCESSING TIME</span>
+        <div class="hero-value">
+          <span id="heroLatencyUs">4,500</span> <span class="hero-unit">&mu;s</span>
+        </div>
+        <span class="hero-sub" id="heroLatencySub">4.50 ms &bull; Deadline: 75 ms</span>
+      </div>
+
+      <!-- Hero 4: Ultrasonic Array -->
+      <div class="hero-card">
+        <div class="hero-corner"></div>
+        <span class="hero-label">ULTRASONIC ARRAY HEALTH</span>
+        <div class="hero-value text-safe">
+          <span id="heroSensorsOk">2 / 2</span> <span class="hero-unit">OK</span>
+        </div>
+        <span class="hero-sub" id="heroNearestSub">Nearest: 42.0 cm (Front)</span>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: DUAL INSTRUMENT PANELS
+         ==================================================================== -->
+    <main class="dual-grid">
+
+      <!-- PANEL 1: SENSORS TELEMETRY -->
+      <section class="cockpit-panel">
+        <div class="panel-top">
+          <div class="panel-header-title">
+            <span class="panel-num">[01]</span>
+            <span>ULTRASONIC RANGE SENSORS</span>
+          </div>
+          <span class="pill-tag pill-ok" id="sensorStatusTag">INTEGRITY 100% OK</span>
+        </div>
+
+        <!-- Sensor 0 -->
+        <div class="sensor-item-card">
+          <div class="sensor-item-header">
+            <div>
+              <span class="sensor-id-label">SENSOR 0</span>
+              <span class="sensor-loc-label">[FRONT / HAZARD DETECTION]</span>
+            </div>
+            <span class="pill-tag pill-ok" id="s0StatusPill">SENSOR_OK</span>
+          </div>
+
+          <div class="sensor-readout-row">
+            <div class="sensor-lcd-digits">
+              <span id="s0DistDigits">42.0</span>
+              <span class="cm-unit">CM</span>
+            </div>
+            <span class="sensor-warning-pill warn" id="s0ZoneTag">WARNING (&lt; 50 cm)</span>
+          </div>
+
+          <!-- Segmented LED Bar -->
+          <div class="led-meter-container">
+            <div class="led-track" id="s0LedTrack">
+              <!-- Dynamically populated with 24 segments -->
+            </div>
+            <div class="led-ticks">
+              <span>0 cm</span>
+              <span>30 cm (Critical)</span>
+              <span>60 cm (Warn)</span>
+              <span>200 cm (Clear)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sensor 1 -->
+        <div class="sensor-item-card">
+          <div class="sensor-item-header">
+            <div>
+              <span class="sensor-id-label">SENSOR 1</span>
+              <span class="sensor-loc-label">[REAR / AUXILIARY]</span>
+            </div>
+            <span class="pill-tag pill-ok" id="s1StatusPill">SENSOR_OK</span>
+          </div>
+
+          <div class="sensor-readout-row">
+            <div class="sensor-lcd-digits">
+              <span id="s1DistDigits">85.0</span>
+              <span class="cm-unit">CM</span>
+            </div>
+            <span class="sensor-warning-pill safe" id="s1ZoneTag">CLEAR (&gt; 60 cm)</span>
+          </div>
+
+          <!-- Segmented LED Bar -->
+          <div class="led-meter-container">
+            <div class="led-track" id="s1LedTrack">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="led-ticks">
+              <span>0 cm</span>
+              <span>30 cm (Critical)</span>
+              <span>60 cm (Warn)</span>
+              <span>200 cm (Clear)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 2: NAVIGATION VS MOTOR CONTROL -->
+      <section class="cockpit-panel">
+        <div class="panel-top">
+          <div class="panel-header-title">
+            <span class="panel-num">[02]</span>
+            <span>NAVIGATION VS MOTOR CONTROL</span>
+          </div>
+          <span class="pill-tag pill-active" id="governorActiveTag">GOVERNOR ENGAGED</span>
+        </div>
+
+        <!-- Subsystem Nav Request -->
+        <div class="arb-card">
+          <div class="arb-top">
+            <span class="arb-title">AUTONOMOUS NAVIGATION REQUEST</span>
+            <span class="arb-cmd-tag" id="arbNavCmd">CMD_FORWARD</span>
+          </div>
+          <div class="arb-speed-row">
+            <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted)">REQUESTED SPEED:</span>
+            <div class="arb-speed-num">
+              <span id="arbNavSpeed">60</span><span style="font-size:1rem;color:var(--text-muted)">%</span>
+            </div>
+          </div>
+          <div class="speed-progress-bar">
+            <div class="speed-fill-nav" id="barNavSpeed" style="width: 60%;"></div>
+          </div>
+        </div>
+
+        <!-- Safety Supervisor Motor Output -->
+        <div class="arb-card">
+          <div class="arb-top">
+            <span class="arb-title">SAFETY SUPERVISOR MOTOR ARBITRATION</span>
+            <span class="arb-cmd-tag gov" id="arbMotorCmd">CMD_FORWARD</span>
+          </div>
+          <div class="arb-speed-row">
+            <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted)">APPROVED SAFE SPEED:</span>
+            <div class="arb-speed-num text-cherry">
+              <span id="arbMotorSpeed">36</span><span style="font-size:1rem;color:var(--text-muted)">%</span>
+            </div>
+          </div>
+          <div class="speed-progress-bar">
+            <div class="speed-fill-motor" id="barMotorSpeed" style="width: 36%;"></div>
+          </div>
+        </div>
+
+        <!-- Curtailment Summary -->
+        <div class="reduction-box">
+          <div class="red-text-group">
+            <h4>SPEED RESTRICTION APPLIED</h4>
+            <p>Curtailed from 60% down to 36% due to obstacle range.</p>
+          </div>
+          <div class="red-badge" id="arbReductionBadge">-40.0% (-24% pts)</div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====================================================================
+         SECTION 4: QNX RTOS DETERMINISTIC TIMING
+         ==================================================================== -->
+    <section class="timing-panel">
+      <div class="panel-top">
+        <div class="panel-header-title">
+          <span class="panel-num">[03]</span>
+          <span>QNX 7.1 RTOS DETERMINISTIC LATENCY &amp; DEADLINES</span>
+        </div>
+        <span class="pill-tag pill-ok" id="deadlinePill">HARD REAL-TIME NOMINAL</span>
+      </div>
+
+      <div class="timing-cells-grid">
+        <div class="timing-cell">
+          <span class="tc-label">LAST PROCESSING</span>
+          <div class="tc-value"><span id="tcLastUs">4,500</span> <span class="tc-unit">&mu;s</span></div>
+          <span class="tc-sub" id="tcLastMs">4.50 ms</span>
+        </div>
+
+        <div class="timing-cell">
+          <span class="tc-label">AVERAGE TIME</span>
+          <div class="tc-value"><span id="tcAvgUs">3,200</span> <span class="tc-unit">&mu;s</span></div>
+          <span class="tc-sub" id="tcAvgMs">3.20 ms</span>
+        </div>
+
+        <div class="timing-cell">
+          <span class="tc-label">WORST-CASE (WCET)</span>
+          <div class="tc-value text-cherry"><span id="tcWorstUs">8,000</span> <span class="tc-unit">&mu;s</span></div>
+          <span class="tc-sub" id="tcWorstMs">8.00 ms</span>
+        </div>
+
+        <div class="timing-cell">
+          <span class="tc-label">DEADLINE LIMIT</span>
+          <div class="tc-value"><span id="tcDeadline">75</span> <span class="tc-unit">ms</span></div>
+          <span class="tc-sub">75,000 &mu;s hard bound</span>
+        </div>
+
+        <div class="timing-cell">
+          <span class="tc-label">DEADLINE MISSES</span>
+          <div class="tc-value text-safe"><span id="tcViolations">0</span></div>
+          <span class="tc-sub">0.00% Violation Rate</span>
+        </div>
+
+        <div class="timing-cell">
+          <span class="tc-label">TOTAL DECISIONS</span>
+          <div class="tc-value"><span id="tcDecisions">100</span></div>
+          <span class="tc-sub">RTOS Exec Cycles</span>
+        </div>
+      </div>
+    </section>
+
+
+  </div>
+
+  <!-- ====================================================================
+       FIREBASE CONFIGURATION MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="configOverlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>[FIREBASE RTDB CONNECTION]</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+
+      <div class="field-group">
+        <label for="cfgUrl">FIREBASE DATABASE URL:</label>
+        <input type="text" id="cfgUrl" class="qnx-input" placeholder="https://your-project-default-rtdb.firebaseio.com">
+      </div>
+
+      <div class="field-group">
+        <label for="cfgNode">DATABASE CHILD PATH:</label>
+        <input type="text" id="cfgNode" class="qnx-input" placeholder="qnx_dashboard" value="qnx_dashboard">
+      </div>
+
+      <div class="field-group">
+        <label for="cfgKey">API KEY (Optional):</label>
+        <input type="text" id="cfgKey" class="qnx-input" placeholder="AIzaSy...">
+      </div>
+
+      <div class="modal-btn-row">
+        <button class="qnx-btn" id="btnConnectDb" style="flex:1;background:var(--qnx-cherry);color:#FFF;">SAVE &amp; CONNECT</button>
+        <button class="qnx-btn" id="btnResetDemo">BENCHMARK DEMO</button>
+        <button class="qnx-btn" id="btnDismissModal">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="qnx-toast" id="qnxToast" style="display:none;"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

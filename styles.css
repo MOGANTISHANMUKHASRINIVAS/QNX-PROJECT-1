@@ -1,0 +1,69 @@
+/* ==========================================================================
+   QNX WHITE & CHERRY RED DESIGN SYSTEM
+   Theme: Crisp White (#FFFFFF), Cherry Red (#C2183A), Deep Red (#8B0018)
+   Geometry: 100% Sharp Square (border-radius: 0px)
+   ========================================================================== */
+:root {
+  --qnx-cherry: #C2183A;
+  --qnx-cherry-dark: #8B0018;
+  --qnx-cherry-light: #FFF0F3;
+  --qnx-cherry-border: #F7B5C2;
+  --qnx-cherry-glow: rgba(194, 24, 58, 0.25);
+
+  --bg-page: #F4F6F9;
+  --bg-panel: #FFFFFF;
+  --bg-subcard: #F8FAFC;
+  --bg-code: #0F172A;
+
+  --text-main: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+
+  --border-light: #E2E8F0;
+  --border-medium: #CBD5E1;
+
+  --status-safe: #059669;
+  --status-safe-bg: #ECFDF5;
+  --status-safe-border: #A7F3D0;
+
+  --status-warn: #D97706;
+  --status-warn-bg: #FFFBEB;
+  --status-warn-border: #FDE68A;
+
+  --status-danger: #DC2626;
+  --status-danger-bg: #FEF2F2;
+
+  --font-digit: 'Chakra Petch', 'Segoe UI', 'JetBrains Mono', Consolas, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0px !important;
+}
+
+body {
+  background-color: var(--bg-page);
+  background-image: 
+    linear-gradient(rgba(194, 24, 58, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(194, 24, 58, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  padding: 16px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cockpit {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
